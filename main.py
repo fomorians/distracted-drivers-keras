@@ -76,12 +76,15 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
 
     model.compile(Adam(lr=1e-3), loss='categorical_crossentropy', metrics=['accuracy'])
 
-    checkpoint_path = os.path.join(CHECKPOINT_PATH, 'model_{}.h5'.format(num_folds))
+    model_path = os.path.join(MODEL_PATH, 'model_{}.json'.format(num_folds))
+    with open(model_path, 'w') as f:
+        f.write(model.to_json())
 
+    checkpoint_path = os.path.join(CHECKPOINT_PATH, 'model_{}.h5'.format(num_folds))
     validation_data = (X_valid, y_valid)
     callbacks = [
-            EarlyStopping(monitor='val_loss', patience=3, verbose=1, mode='auto'),
-            ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
+        EarlyStopping(monitor='val_loss', patience=3, verbose=1, mode='auto'),
+        ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
     ]
     model.fit(X_train, y_train, \
             batch_size=BATCH_SIZE, nb_epoch=NB_EPOCHS, \
@@ -98,10 +101,6 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
 
     predictions_test = model.predict(X_test, batch_size=100, verbose=0)
     predictions_total.append(predictions_test)
-
-    model_path = os.path.join(MODEL_PATH, 'model_{}.json'.format(num_folds))
-    with open(model_path, 'w') as f:
-        f.write(model.to_json())
 
     num_folds += 1
 
