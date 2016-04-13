@@ -100,7 +100,7 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
     predictions_total.append(predictions_test)
 
     model_path = os.path.join(MODEL_PATH, 'model_{}.json'.format(num_folds))
-    with open(model_path, 'w') as f
+    with open(model_path, 'w') as f:
         f.write(model.to_json())
 
     num_folds += 1
