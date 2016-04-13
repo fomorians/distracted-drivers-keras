@@ -1,0 +1,11 @@
+.DS_Store
+.env/
+*.pyc
+dataset/imgs/
+dataset/*.jpg
+dataset/*.pkl
+dataset/*.csv
+dataset/*.zip
+checkpoints/
+summaries/
+models/

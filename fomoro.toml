@@ -1,0 +1,7 @@
+name = "distracted-drivers"
+repo = "https://github.com/fomorians/distracted-drivers.git"
+description = "State Farm Distracted Driver Challenge"
+environment = "theano"
+
+[datasets]
+"<username>/distracted-drivers" = "0.0.1"
