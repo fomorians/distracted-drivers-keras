@@ -4,4 +4,4 @@ description = "State Farm Distracted Driver Challenge"
 environment = "theano"
 
 [datasets]
-"<username>/distracted-drivers" = "0.0.1"
+"jim/distracted-drivers" = "0.0.1"
