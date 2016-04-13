@@ -8,7 +8,7 @@ import numpy as np
 
 from keras.models import Sequential
 from keras.optimizers import Adam
-from keras.callbacks import EarlyStopping, ModelCheckpoint
+from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from keras.layers.core import Dense, Activation, Flatten, Dropout
 from keras.layers.convolutional import Convolution2D
 from keras.layers.normalization import BatchNormalization
@@ -92,9 +92,13 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
         print('Restoring fold from checkpoint.')
         model.load_weights(checkpoint_path)
 
+    summary_path = os.path.join(SUMMARY_PATH, 'model_{}'.format(num_folds))
+    mkdirp(summary_path)
+
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=3, verbose=1, mode='auto'),
-        ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
+        ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1, save_best_only=True, mode='auto'),
+        TensorBoard(log_dir=summary_path, histogram_freq=0)
     ]
     model.fit(X_train, y_train, \
             batch_size=BATCH_SIZE, nb_epoch=NB_EPOCHS, \
