@@ -2,7 +2,7 @@ from __future__ import print_function
 from __future__ import division
 
 import os
-os.environ['THEANO_FLAGS'] = "device=gpu,floatX=float32"
+os.environ['THEANO_FLAGS'] = 'mode=FAST_RUN,device=gpu,floatX=float32'
 
 import time
 import pickle
