@@ -2,6 +2,8 @@ from __future__ import print_function
 from __future__ import division
 
 import os
+os.environ['THEANO_FLAGS'] = "device=gpu,floatX=float32"
+
 import time
 import pickle
 import numpy as np
@@ -38,7 +40,7 @@ BATCH_SIZE = 50
 
 with open(DATASET_PATH, 'rb') as f:
     X_train_raw, y_train_raw, X_test, X_test_ids, driver_ids = pickle.load(f)
-    _, driver_indices = np.unique(np.array(driver_ids), return_inverse=True)
+_, driver_indices = np.unique(np.array(driver_ids), return_inverse=True)
 
 predictions_total = [] # accumulated predictions from each fold
 scores_total = [] # accumulated scores from each fold
@@ -46,6 +48,11 @@ num_folds = 0
 
 for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOLDS, test_size=0.2, random_state=67):
     print('Fold {}/{}'.format(num_folds + 1, MAX_FOLDS))
+
+    # skip fold if a checkpoint exists for the next one
+    next_checkpoint_path = os.path.join(CHECKPOINT_PATH, 'model_{}.h5'.format(num_folds + 1))
+    if os.path.exists(next_checkpoint_path):
+        continue
 
     X_train, y_train = X_train_raw[train_index,...], y_train_raw[train_index,...]
     X_valid, y_valid = X_train_raw[valid_index,...], y_train_raw[valid_index,...]
@@ -80,7 +87,11 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
     with open(model_path, 'w') as f:
         f.write(model.to_json())
 
+    # restore existing checkpoint, if it exists
     checkpoint_path = os.path.join(CHECKPOINT_PATH, 'model_{}.h5'.format(num_folds))
+    if os.path.exists(checkpoint_path):
+        model.load_weights(checkpoint_path)
+
     validation_data = (X_valid, y_valid)
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=3, verbose=1, mode='auto'),
