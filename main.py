@@ -18,7 +18,7 @@ from sklearn.cross_validation import LabelShuffleSplit
 
 from utilities import write_submission, calc_geom, calc_geom_arr, mkdirp
 
-TESTING = True
+TESTING = False
 
 DATASET_PATH = os.environ.get('DATASET_PATH', 'dataset/data_8.pkl' if not TESTING else 'dataset/data_8_subset.pkl')
 
@@ -31,7 +31,7 @@ mkdirp(SUMMARY_PATH)
 mkdirp(MODEL_PATH)
 
 NB_EPOCHS = 20 if not TESTING else 1
-MAX_FOLDS = 8 if not TESTING else 1
+MAX_FOLDS = 3 if not TESTING else 1
 
 WIDTH, HEIGHT, NB_CHANNELS = 640 // 8, 480 // 8, 3
 BATCH_SIZE = 50
