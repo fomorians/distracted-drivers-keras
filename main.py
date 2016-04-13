@@ -89,17 +89,17 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
     model.fit(X_train, y_train, \
             batch_size=BATCH_SIZE, nb_epoch=NB_EPOCHS, \
             shuffle=True, \
-            verbose=2, \
+            verbose=1, \
             validation_data=validation_data, \
             callbacks=callbacks)
 
-    predictions_valid = model.predict(X_valid, batch_size=100, verbose=0)
+    predictions_valid = model.predict(X_valid, batch_size=100, verbose=1)
     score_valid = log_loss(y_valid, predictions_valid)
     scores_total.append(score_valid)
 
     print('Score: {}'.format(score_valid))
 
-    predictions_test = model.predict(X_test, batch_size=100, verbose=0)
+    predictions_test = model.predict(X_test, batch_size=100, verbose=1)
     predictions_total.append(predictions_test)
 
     num_folds += 1
