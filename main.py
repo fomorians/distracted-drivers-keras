@@ -52,6 +52,7 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
     # skip fold if a checkpoint exists for the next one
     next_checkpoint_path = os.path.join(CHECKPOINT_PATH, 'model_{}.h5'.format(num_folds + 1))
     if os.path.exists(next_checkpoint_path):
+        print('Checkpoint exists for next fold, skipping current fold.')
         continue
 
     X_train, y_train = X_train_raw[train_index,...], y_train_raw[train_index,...]
@@ -90,9 +91,9 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
     # restore existing checkpoint, if it exists
     checkpoint_path = os.path.join(CHECKPOINT_PATH, 'model_{}.h5'.format(num_folds))
     if os.path.exists(checkpoint_path):
+        print('Restoring fold from checkpoint.')
         model.load_weights(checkpoint_path)
 
-    validation_data = (X_valid, y_valid)
     callbacks = [
         EarlyStopping(monitor='val_loss', patience=3, verbose=1, mode='auto'),
         ModelCheckpoint(checkpoint_path, monitor='val_loss', verbose=1, save_best_only=True, mode='auto')
@@ -101,7 +102,7 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
             batch_size=BATCH_SIZE, nb_epoch=NB_EPOCHS, \
             shuffle=True, \
             verbose=1, \
-            validation_data=validation_data, \
+            validation_data=(X_valid, y_valid), \
             callbacks=callbacks)
 
     predictions_valid = model.predict(X_valid, batch_size=100, verbose=1)
