@@ -23,7 +23,7 @@ In this step we'll upload the dataset to Fomoro for training.
 1. Download the images and drivers list into the "dataset" folder:
 2. Unzip both into the "dataset" folder so it looks like this:
 
-  - distracted-drivers-tf/
+  - distracted-drivers-keras/
     - dataset/
       - imgs/
         - train/
