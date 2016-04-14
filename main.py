@@ -30,12 +30,12 @@ mkdirp(CHECKPOINT_PATH)
 mkdirp(SUMMARY_PATH)
 mkdirp(MODEL_PATH)
 
-NB_EPOCHS = 5 if not TESTING else 1
-MAX_FOLDS = 1
+NB_EPOCHS = 10 if not TESTING else 1
+MAX_FOLDS = 3
 DOWNSAMPLE = 20
 
 WIDTH, HEIGHT, NB_CHANNELS = 640 // DOWNSAMPLE, 480 // DOWNSAMPLE, 3
-BATCH_SIZE = 128
+BATCH_SIZE = 50
 
 with open(DATASET_PATH, 'rb') as f:
     X_train_raw, y_train_raw, X_test, X_test_ids, driver_ids = pickle.load(f)
@@ -47,13 +47,7 @@ num_folds = 0
 
 def vgg_bn():
     model = Sequential()
-    model.add(Convolution2D(16, 3, 3, border_mode='same', init='he_normal', input_shape=(NB_CHANNELS, WIDTH, HEIGHT)))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
-    model.add(Convolution2D(16, 3, 3, border_mode='same', init='he_normal'))
-    model.add(BatchNormalization())
-    model.add(Activation('relu'))
-    model.add(Convolution2D(32, 3, 3, subsample=(2, 2), init='he_normal'))
+    model.add(Convolution2D(32, 3, 3, border_mode='same', init='he_normal', input_shape=(NB_CHANNELS, WIDTH, HEIGHT)))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
     model.add(Convolution2D(32, 3, 3, border_mode='same', init='he_normal'))
@@ -65,8 +59,14 @@ def vgg_bn():
     model.add(Convolution2D(64, 3, 3, border_mode='same', init='he_normal'))
     model.add(BatchNormalization())
     model.add(Activation('relu'))
+    model.add(Convolution2D(128, 3, 3, subsample=(2, 2), init='he_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Convolution2D(128, 3, 3, border_mode='same', init='he_normal'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
     model.add(Flatten())
-    model.add(Dense(64, activation='sigmoid', init='he_normal'))
+    model.add(Dense(128, activation='sigmoid', init='he_normal'))
     model.add(Dropout(0.5))
     model.add(Dense(10, activation='softmax', init='he_normal'))
     model.compile(Adam(lr=1e-3), loss='categorical_crossentropy', metrics=['accuracy'])
@@ -76,10 +76,10 @@ for train_index, valid_index in LabelShuffleSplit(driver_indices, n_iter=MAX_FOL
     print('Fold {}/{}'.format(num_folds + 1, MAX_FOLDS))
 
     # skip fold if a checkpoint exists for the next one
-    next_checkpoint_path = os.path.join(CHECKPOINT_PATH, 'model_{}.h5'.format(num_folds + 1))
-    if os.path.exists(next_checkpoint_path):
-        print('Checkpoint exists for next fold, skipping current fold.')
-        continue
+    # next_checkpoint_path = os.path.join(CHECKPOINT_PATH, 'model_{}.h5'.format(num_folds + 1))
+    # if os.path.exists(next_checkpoint_path):
+    #     print('Checkpoint exists for next fold, skipping current fold.')
+    #     continue
 
     X_train, y_train = X_train_raw[train_index,...], y_train_raw[train_index,...]
     X_valid, y_valid = X_train_raw[valid_index,...], y_train_raw[valid_index,...]
