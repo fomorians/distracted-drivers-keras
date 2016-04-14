@@ -1,4 +1,4 @@
-name = "distracted-drivers"
+name = "distracted-drivers-keras"
 description = "State Farm Distracted Driver Challenge Dataset"
 version = "0.0.2"
 file = "data_20.pkl"
