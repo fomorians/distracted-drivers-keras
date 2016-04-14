@@ -52,7 +52,7 @@ You can type `fomoro help` for more commands.
 
 ### Running Locally
 
-This project uses [TensorFlow](https://www.tensorflow.org/versions/r0.7/get_started/os_setup.html#download-and-setup). To run the code locally simply install the dependencies and run `python main.py`.
+To run the code locally simply install the dependencies and run `python main.py`.
 
 ## Model Development
 
