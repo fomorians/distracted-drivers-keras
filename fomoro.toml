@@ -1,7 +1,7 @@
 name = "distracted-drivers-keras"
-repo = "<CLONE URL GOES HERE>"
+repo = "https://github.com/fomorians/distracted-drivers-keras.git"
 description = "State Farm Distracted Driver Challenge"
 environment = "tensorflow"
 
 [datasets]
-"<USERNAME GOES HERE>/distracted-drivers-keras" = "0.0.2"
+"jim/distracted-drivers-keras" = "0.0.1"
