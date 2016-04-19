@@ -36,8 +36,8 @@ def load_train(base):
     print('Reading train images...')
     for j in range(NUM_CLASSES):
         print('Loading folder c{}...'.format(j))
-        paths = glob.glob(os.path.join(base, 'c{}/*.jpg'.format(j)))
         driver_ids_group = driver_imgs_grouped.get_group('c{}'.format(j))
+        paths = os.path.join(base, 'c{}/'.format(j)) + driver_ids_group.img
 
         if SUBSET:
             paths = paths[:100]
